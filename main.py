@@ -129,6 +129,27 @@ def limpiar_dataframe(df):
 def cargar_datos():
     st.sidebar.header("Carga de archivo")
 
+    base_dir = Path(__file__).resolve().parent
+    default_csv = base_dir / "mortalidad_materna_2002_2024.csv"
+
+    opcion = st.sidebar.radio(
+        "Fuente de datos",
+        [
+            "Usar archivo por defecto",
+            "Subir archivo CSV"
+        ]
+    )
+
+    if opcion == "Usar archivo por defecto":
+        if default_csv.exists():
+            df = pd.read_csv(default_csv)
+            df = limpiar_dataframe(df)
+            st.sidebar.success("Archivo por defecto cargado.")
+            return df
+        else:
+            st.sidebar.warning(f"No se encontró el archivo: {default_csv}")
+            return None
+
     archivo = st.sidebar.file_uploader(
         "Carga el archivo CSV",
         type=["csv"]
@@ -140,7 +161,6 @@ def cargar_datos():
         return df
 
     return None
-
 
 def main():
     mostrar_header()
